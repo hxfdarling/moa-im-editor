@@ -8,8 +8,8 @@ import Selection, { Range } from './selection';
 import extend from 'extend';
 import logger from './logger';
 import Theme from './theme';
-import { getGpsCanvas, imageSize } from '../modules/util'
-import ubbToHtml from './ubbToHtml.js'
+import { getGpsCanvas, imageSize, getAtCanvas } from '../modules/util'
+import { ubbToHtml } from './ubb-parser'
 
 let debug = logger('quill');
 
@@ -86,6 +86,7 @@ class Quill {
     this.editor = new Editor(this.scroll);
     this.selection = new Selection(this.scroll, this.emitter);
     this.theme = new this.options.theme(this, this.options);
+    this.at = this.theme.addModule('at')
     this.keyboard = this.theme.addModule('keyboard');
     this.clipboard = this.theme.addModule('clipboard');
     this.history = this.theme.addModule('history');
@@ -112,6 +113,20 @@ class Quill {
     if (this.options.readOnly) {
       this.disable();
     }
+    this.root.addEventListener('blur', e => {
+      if (this.pasteing) {
+        return
+      }
+      this.emitter.emit('blur', e)
+      this.root.classList.remove('focus')
+    })
+    this.root.addEventListener('focus', e => {
+      this.emitter.emit('focus', e)
+      this.root.classList.add('focus')
+    })
+    this.root.addEventListener('paste', e => {
+      this.emitter.emit('paste', e)
+    })
   }
 
   addContainer(container, refNode = null) {
@@ -358,35 +373,24 @@ class Quill {
         if (typeof op.insert === 'string') {
           result = op.insert
         } else {
-          if (op.insert.image) {
-            if (attributes['data-hash']) {
-              result = `[img hash=${attributes['data-hash']} width=${attributes['data-width']} height=${attributes['data-height']}][/img]`
-            }
+          if (op.insert.at) {
+            result = `[atPerson id="${attributes['data-value']}" name="${attributes['data-text']}"][/atPerson]`
           }
-          if (op.insert.gps) {
-            if (attributes['data-lon']) {
-              result = `[gps lon=${attributes['data-lon']} lat=${attributes['data-lat']}]${attributes['data-text']}[/gps]`
-            }
+          if (op.insert.emoji) {
+            result = `[emoji id="${attributes['data-emoji']}"][/emoji]`
           }
-
         }
-        if (attributes.link) {
-          result = `[url=${attributes.link}]${result}[/url]`
-        }
-        if (attributes.color) {
-          result = `[color=${attributes.color}]${result}[/color]`
-        }
-        if (attributes.bold) {
-          result = `[b]${result}[/b]`
-        }
-
         return result
       }).join('')
 
   }
-  setValue(ubb, hashToUrlMap = {}) {
-    this.setContents(this.clipboard.convert(ubbToHtml(ubb, hashToUrlMap)))
+  setValue(ubb) {
     this.history.clear()
+    let html = ubbToHtml(ubb, this.options.getEmojiUrl)
+    let delta = this.clipboard.convert(html)
+    this.setContents(delta)
+    this.setSelection(delta.length(), Quill.sources.SILENT);
+    this.scrollIntoView()
   }
   insertLink(text, link) {
     let range = this.getSelection(true);
@@ -431,6 +435,38 @@ class Quill {
         'data-hash': data.hash,
         'data-width': data.width,
         'data-height': data.height
+      })
+    this.updateContents(delta, Emitter.sources.USER);
+    this.setSelection(delta.length() - (range ? range.length : 0), Quill.sources.SILENT);
+    this.scrollIntoView()
+  }
+  insertAt(data) {
+    if (!data) {
+      return
+    }
+    let range = this.getSelection(true);
+    let url = getAtCanvas("@" + data.text)
+    let delta = new Delta()
+      .retain(range.index)
+      .delete(range.length)
+      .insert({ at: url }, {
+        'data-text': data.text,
+        'data-value': data.value,
+        'data-at': true
+      })
+
+    this.updateContents(delta, Emitter.sources.USER);
+    this.setSelection(delta.length() - (range ? range.length : 0), Quill.sources.SILENT);
+    this.scrollIntoView()
+  }
+  insertEmoji(data) {
+    if (!data) { return }
+    let range = this.getSelection(true);
+    let delta = new Delta()
+      .retain(range.index)
+      .delete(range.length)
+      .insert({ emoji: data.url }, {
+        'data-emoji': data.emoji
       })
     this.updateContents(delta, Emitter.sources.USER);
     this.setSelection(delta.length() - (range ? range.length : 0), Quill.sources.SILENT);

@@ -12,7 +12,6 @@ class Drop extends Module {
     this.quill.root.addEventListener('drop', this.onDrop.bind(this));
     this.container = this.quill.addContainer('ql-drop');
     this.matchers = [];
-    console.log(CLIPBOARD_CONFIG)
     CLIPBOARD_CONFIG.concat(this.options.matchers || []).forEach(([selector, matcher]) => {
       if (!options.matchVisual && matcher === matchSpacing) return;
       this.addMatcher(selector, matcher);

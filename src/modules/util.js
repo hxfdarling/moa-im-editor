@@ -163,6 +163,7 @@ function matchBreak(node, delta) {
   }
   return delta;
 }
+/* 多种图片处理 */
 function matchImage(node, delta) {
   delta = new Delta()
   if (node.dataset.hash && node.src) {
@@ -179,6 +180,18 @@ function matchImage(node, delta) {
       'data-lon': node.dataset.lon,
       'data-lat': node.dataset.lat,
       'data-text': node.dataset.text
+    })
+  }
+  if (node.dataset.at) {
+    delta.insert({ at: node.src }, {
+      'data-text': node.dataset.text,
+      'data-value': node.dataset.value,
+      'data-at': true
+    })
+  }
+  if (node.dataset.emoji !== undefined) {
+    delta.insert({ emoji: node.src }, {
+      'data-emoji': node.dataset.emoji
     })
   }
   return delta
@@ -288,6 +301,24 @@ function getGpsCanvas(text) {
   document.body.removeChild(el)
   return src;
 }
+function getAtCanvas(text) {
+  let el = document.createElement('canvas')
+  el.style = "visibility: hidden;top:0;left:0;position: absolute;z-index: -1000"
+  el.height = 22;
+  el.width = 4000;
+  document.body.appendChild(el)
+  var ctx = el.getContext('2d');
+  ctx.font = "14px Arial";
+  ctx.textAlign = 'left';
+  el.width = ctx.measureText(text).width + 5;
+  ctx.font = "14px Arial";
+
+  ctx.fillStyle = "#bf5213";
+  ctx.fillText(text, 0, 15);
+  var src = el.toDataURL("image/png");
+  document.body.removeChild(el)
+  return src;
+}
 function imageSize({ width, height }) {
   var _w = parseInt(width);
   var _h = parseInt(height);
@@ -303,7 +334,7 @@ function imageSize({ width, height }) {
   return { width, height }
 }
 export {
-  getGpsCanvas, imageSize,
+  getAtCanvas, getGpsCanvas, imageSize,
   matchAttributor, deltaEndsWith, matchBlot, matchNewline,
   matchSpacing, matchText, traverse, DOM_KEY, CLIPBOARD_CONFIG
 }

@@ -6,8 +6,7 @@ import icons from '../ui/icons';
 
 
 const TOOLBAR_CONFIG = [
-  ['bold', 'italic', 'link'],
-  [{ header: 1 }, { header: 2 }, 'blockquote']
+  ['bold', { color: [] }, 'link', "image", "gps"]
 ];
 
 class BubbleTheme extends BaseTheme {
@@ -30,7 +29,7 @@ BubbleTheme.DEFAULTS = extend(true, {}, BaseTheme.DEFAULTS, {
   modules: {
     toolbar: {
       handlers: {
-        link: function(value) {
+        link: function (value) {
           if (!value) {
             this.quill.format('link', false);
           } else {
@@ -96,14 +95,14 @@ class BubbleTooltip extends BaseTooltip {
     let arrow = this.root.querySelector('.ql-tooltip-arrow');
     arrow.style.marginLeft = '';
     if (shift === 0) return shift;
-    arrow.style.marginLeft = (-1*shift - arrow.offsetWidth/2) + 'px';
+    arrow.style.marginLeft = (-1 * shift - arrow.offsetWidth / 2) + 'px';
   }
 }
 BubbleTooltip.TEMPLATE = [
   '<span class="ql-tooltip-arrow"></span>',
   '<div class="ql-tooltip-editor">',
-    '<input type="text" data-formula="e=mc^2" data-link="https://quilljs.com" data-video="Embed URL">',
-    '<a class="ql-close"></a>',
+  '<input type="text" data-formula="e=mc^2" data-link="https://quilljs.com" data-video="Embed URL">',
+  '<a class="ql-close"></a>',
   '</div>'
 ].join('');
 

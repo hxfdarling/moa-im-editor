@@ -12,8 +12,8 @@
 	height: 100%;
 	margin: 0px;
 	position: relative;
-	margin-top: -42px;
-	padding-top: 42px;
+	/* margin-top: -42px;
+	padding-top: 42px; */
 }
 
 .ql-container.ql-disabled .ql-tooltip {
@@ -805,7 +805,7 @@
 
 .ql-snow .ql-editor img {
 	max-width: 100%;
-	display: flex;
+	/* display: flex; */
 	vertical-align: middle;
 }
 
@@ -1069,6 +1069,7 @@
 }
 
 .ql-toolbar.ql-snow {
+  display: none;
 	border: 1px solid #ccc;
 	box-sizing: border-box;
 	font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
@@ -1104,7 +1105,7 @@
 }
 
 .ql-toolbar.ql-snow+.ql-container.ql-snow {
-	border-top: 0px;
+	/* border-top: 0px; */
 }
 
 .ql-snow .ql-tooltip {

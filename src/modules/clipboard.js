@@ -30,11 +30,24 @@ class Clipboard extends Module {
   }
 
   convert(html) {
+    /**
+     * 通过setValue调用保留at数据，如果通过复制粘贴就直接转为文本展示
+     */
+    let noAt = true
     if (typeof html === 'string') {
+      noAt = false
       this.container.innerHTML = html.replace(/\>\r?\n +\</g, '><'); // Remove spaces between tags
     }
     let [elementMatchers, textMatchers] = this.prepareMatching();
     let delta = traverse(this.container, elementMatchers, textMatchers);
+    if (noAt) {
+      delta.ops = delta.ops.map(item => {
+        if (typeof item.insert !== 'string' && item.insert.at) {
+          item.insert = "@" + item.attributes['data-text'] + " "
+        }
+        return item
+      })
+    }
     // Remove trailing newline
     if (deltaEndsWith(delta, '\n') && delta.ops[delta.ops.length - 1].attributes == null) {
       delta = delta.compose(new Delta().retain(delta.length() - 1).delete(1));
@@ -58,6 +71,7 @@ class Clipboard extends Module {
     let range = this.quill.getSelection();
     let delta = new Delta().retain(range.index);
     let scrollTop = this.quill.scrollingContainer.scrollTop;
+    this.quill.pasteing = true
     this.container.focus();
     this.quill.selection.update(Quill.sources.SILENT);
     setTimeout(() => {
@@ -67,6 +81,7 @@ class Clipboard extends Module {
       this.quill.setSelection(delta.length() - range.length, Quill.sources.SILENT);
       this.quill.scrollingContainer.scrollTop = scrollTop;
       this.quill.focus();
+      this.quill.pasteing = false
     }, 1);
   }
 

@@ -9,20 +9,22 @@ import Quill from './core';
 // import List, { ListItem } from './formats/list';
 
 // import { BackgroundClass, BackgroundStyle } from './formats/background';
-import { ColorClass, ColorStyle } from './formats/color';
+// import { ColorClass, ColorStyle } from './formats/color';
 // import { FontClass, FontStyle } from './formats/font';
 // import { SizeClass, SizeStyle } from './formats/size';
 
-import Bold from './formats/bold';
+// import Bold from './formats/bold';
 // import Italic from './formats/italic';
-import Link from './formats/link';
+// import Link from './formats/link';
 // import Script from './formats/script';
 // import Strike from './formats/strike';
 // import Underline from './formats/underline';
 
-import Image from './formats/image';
+// import Image from './formats/image';
 // import Video from './formats/video';
-import Gps from './formats/gps.js'
+// import Gps from './formats/gps'
+import At from './formats/at'
+import Emoji from './formats/emoji'
 
 // import CodeBlock, { Code as InlineCode } from './formats/code';
 
@@ -45,14 +47,14 @@ Quill.register({
 
   // 'attributors/class/align': AlignClass,
   // 'attributors/class/background': BackgroundClass,
-  'attributors/class/color': ColorClass,
+  // 'attributors/class/color': ColorClass,
   // 'attributors/class/direction': DirectionClass,
   // 'attributors/class/font': FontClass,
   // 'attributors/class/size': SizeClass,
 
   // 'attributors/style/align': AlignStyle,
   // 'attributors/style/background': BackgroundStyle,
-  'attributors/style/color': ColorStyle,
+  // 'attributors/style/color': ColorStyle,
   // 'attributors/style/direction': DirectionStyle,
   // 'attributors/style/font': FontStyle,
   // 'attributors/style/size': SizeStyle
@@ -65,7 +67,7 @@ Quill.register({
   // 'formats/indent': Indent,
 
   // 'formats/background': BackgroundStyle,
-  'formats/color': ColorStyle,
+  // 'formats/color': ColorStyle,
   // 'formats/font': FontClass,
   // 'formats/size': SizeClass,
 
@@ -74,17 +76,19 @@ Quill.register({
   // 'formats/header': Header,
   // 'formats/list': List,
 
-  'formats/bold': Bold,
+  // 'formats/bold': Bold,
   // 'formats/code': InlineCode,
   // 'formats/italic': Italic,
-  'formats/link': Link,
+  // 'formats/link': Link,
   // 'formats/script': Script,
   // 'formats/strike': Strike,
   // 'formats/underline': Underline,
 
-  'formats/image': Image,
+  // 'formats/image': Image,
   // 'formats/video': Video,
-  'formats/gps': Gps,
+  // 'formats/gps': Gps,
+  'formats/at': At,
+  'formats/emoji': Emoji,
 
   // 'formats/list/item': ListItem,
 
