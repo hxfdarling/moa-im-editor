@@ -52,7 +52,7 @@ class At extends Module {
     if (e.ctrlKey || e.shiftKey) {
       return
     }
-    if (isEscKey(e) && isMoveCursorKey(e)) {
+    if (isEscKey(e) || isMoveCursorKey(e)) {
       this.cancel()
     }
     if (this.listening && (isUpOrDown(e) || isEnterKey(e))) {
