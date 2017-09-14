@@ -13,7 +13,7 @@ const DOWN_KEY = 40
 const ESC_KEY = 27
 let isMoveCursorKey = e => (e.keyCode == 35 || e.keyCode == 36 || e.keyCode == 37 || e.keyCode == 39)
 let isEscKey = e => e.keyCode === ESC_KEY
-let isEnterKey = e => e.keyCode === ENTER_KEY
+let isEnterKey = e => e.keyCode === ENTER_KEY && !e.ctrlKey && !e.shiftKey
 let isUpOrDown = e => e.keyCode === UP_KEY || e.keyCode === DOWN_KEY
 class At extends Module {
   constructor(quill, options) {
@@ -47,6 +47,9 @@ class At extends Module {
   }
   onkeydown(e) {
     if (!this.view) {
+      return
+    }
+    if (e.ctrlKey || e.shiftKey) {
       return
     }
     if (isEscKey(e) && isMoveCursorKey(e)) {
