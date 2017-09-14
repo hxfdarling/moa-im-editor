@@ -3,6 +3,9 @@ class Module {
     this.quill = quill;
     this.options = options;
   }
+  destroy() {
+
+  }
 }
 Module.DEFAULTS = {};
 

@@ -86,11 +86,14 @@ class Quill {
     this.editor = new Editor(this.scroll);
     this.selection = new Selection(this.scroll, this.emitter);
     this.theme = new this.options.theme(this, this.options);
+
+    this.input = this.theme.addModule('input')
     this.at = this.theme.addModule('at')
     this.keyboard = this.theme.addModule('keyboard');
     this.clipboard = this.theme.addModule('clipboard');
     this.history = this.theme.addModule('history');
     this.drop = this.theme.addModule('drop')
+
     this.theme.init();
     this.emitter.on(Emitter.events.EDITOR_CHANGE, (type) => {
       if (type === Emitter.events.TEXT_CHANGE) {
@@ -113,22 +116,15 @@ class Quill {
     if (this.options.readOnly) {
       this.disable();
     }
-    this.root.addEventListener('blur', e => {
-      if (this.pasteing) {
-        return
-      }
-      this.emitter.emit('blur', e)
-      this.root.classList.remove('focus')
-    })
-    this.root.addEventListener('focus', e => {
-      this.emitter.emit('focus', e)
-      this.root.classList.add('focus')
-    })
-    this.root.addEventListener('paste', e => {
-      this.emitter.emit('paste', e)
-    })
   }
-
+  destroy() {
+    this.input.destroy()
+    this.at.destroy()
+    this.keyboard.destroy()
+    this.clipboard.destroy()
+    this.history.destroy()
+    this.drop.destroy()
+  }
   addContainer(container, refNode = null) {
     if (typeof container === 'string') {
       let className = container;

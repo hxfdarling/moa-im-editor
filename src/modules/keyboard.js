@@ -78,7 +78,8 @@ class Keyboard extends Module {
   }
 
   listen() {
-    this.quill.root.addEventListener('keydown', (evt) => {
+    this.quill.root.addEventListener('keydown', this._keydown = (evt) => {
+      this.quill.emitter.emit('keydown', evt)
       if (evt.defaultPrevented) return;
       let which = evt.which || evt.keyCode;
       let bindings = (this.bindings[which] || []).filter(function (binding) {
@@ -126,9 +127,13 @@ class Keyboard extends Module {
         return binding.handler.call(this, range, curContext) !== true;
       });
       if (prevented) {
+        this.quill.emitter.emit('input')
         evt.preventDefault();
       }
     });
+  }
+  destroy() {
+    this.quill.root.removeEventListener('keydown', this._keydown)
   }
 }
 

@@ -9,7 +9,7 @@ let debug = logger('quill:drop');
 class Drop extends Module {
   constructor(quill, options) {
     super(quill, options);
-    this.quill.root.addEventListener('drop', this.onDrop.bind(this));
+    this.quill.root.addEventListener('drop', this._onDrop = this.onDrop.bind(this));
     this.container = this.quill.addContainer('ql-drop');
     this.matchers = [];
     CLIPBOARD_CONFIG.concat(this.options.matchers || []).forEach(([selector, matcher]) => {
@@ -86,6 +86,9 @@ class Drop extends Module {
       }
     });
     return [elementMatchers, textMatchers];
+  }
+  destroy() {
+    this.quill.root.removeEventListener('drop', this._onDrop)
   }
 }
 Drop.DEFAULTS = {

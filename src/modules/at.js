@@ -25,8 +25,8 @@ class At extends Module {
     if (this.quill.options.atView) {
       this.bindView(this.quill.options.atView)
     }
-    this.quill.root.addEventListener('input', this.onInput.bind(this));
-    this.quill.root.addEventListener('keydown', this.onkeydown.bind(this))
+    this.quill.on('input', this.onInput.bind(this));
+    this.quill.on('keydown', this.onkeydown.bind(this))
   }
   bindView(view) {
     this.view = view

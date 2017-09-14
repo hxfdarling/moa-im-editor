@@ -15,6 +15,7 @@ import History from './modules/history';
 import Keyboard from './modules/keyboard';
 import Drop from './modules/drop'
 import At from './modules/at'
+import Input from './modules/input'
 
 Quill.register({
   'blots/block': Block,
@@ -31,7 +32,8 @@ Quill.register({
   'modules/history': History,
   'modules/keyboard': Keyboard,
   'modules/drop': Drop,
-  'modules/at': At
+  'modules/at': At,
+  'modules/input': Input
 });
 
 Parchment.register(Block, Break, Cursor, Inline, Scroll, TextBlot);
