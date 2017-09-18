@@ -3,9 +3,6 @@ import './src/assets/quill.snow.css'
 import Quill from './src/quill.js'
 
 let x = window.x = new Quill('#snow-container .editor', {
-  modules: {
-    'toolbar': [[{ 'align': [] }]]
-  },
   atView: {
     hide() {
       console.log("hide")

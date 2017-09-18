@@ -6,7 +6,7 @@ import icons from '../ui/icons';
 
 
 const TOOLBAR_CONFIG = [
-  ['bold', { color: [] }, 'link', "image", "gps"]
+  [{ 'align': [] }]
 ];
 
 class BubbleTheme extends BaseTheme {

@@ -10,7 +10,7 @@ import Delta from 'quill-delta';
 
 
 const TOOLBAR_CONFIG = [
-  // ['bold', { color: [] }, 'link', "image", "gps"]
+  [{ 'align': [] }]
 ];
 
 class SnowTheme extends BaseTheme {
