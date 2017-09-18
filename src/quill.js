@@ -1,6 +1,6 @@
 import Quill from './core';
 
-// import { AlignClass, AlignStyle } from './formats/align';
+import { AlignClass, AlignStyle } from './formats/align';
 // import { DirectionAttribute, DirectionClass, DirectionStyle } from './formats/direction';
 // import { IndentClass as Indent } from './formats/indent';
 
@@ -45,14 +45,14 @@ import SnowTheme from './themes/snow';
 Quill.register({
   // 'attributors/attribute/direction': DirectionAttribute,
 
-  // 'attributors/class/align': AlignClass,
+  'attributors/class/align': AlignClass,
   // 'attributors/class/background': BackgroundClass,
   // 'attributors/class/color': ColorClass,
   // 'attributors/class/direction': DirectionClass,
   // 'attributors/class/font': FontClass,
   // 'attributors/class/size': SizeClass,
 
-  // 'attributors/style/align': AlignStyle,
+  'attributors/style/align': AlignStyle,
   // 'attributors/style/background': BackgroundStyle,
   // 'attributors/style/color': ColorStyle,
   // 'attributors/style/direction': DirectionStyle,
@@ -62,7 +62,7 @@ Quill.register({
 
 
 Quill.register({
-  // 'formats/align': AlignClass,
+  'formats/align': AlignClass,
   // 'formats/direction': DirectionClass,
   // 'formats/indent': Indent,
 

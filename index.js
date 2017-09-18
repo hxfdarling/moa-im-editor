@@ -2,7 +2,10 @@ import 'core-js/shim'
 import './src/assets/quill.snow.css'
 import Quill from './src/quill.js'
 
-window.x = new Quill(document.querySelector('#app'), {
+let x = window.x = new Quill('#snow-container .editor', {
+  modules: {
+    'toolbar': [[{ 'align': [] }]]
+  },
   atView: {
     hide() {
       console.log("hide")
@@ -23,6 +26,11 @@ window.x = new Quill(document.querySelector('#app'), {
   },
   placeholder: '欢迎使用口袋助理富文本编辑器',
   enterHandler() {//自定义enter键
-    console.log('enter')
+    let v = x.getValue()
+    console.log(v)
+    // if (v.trim()) {
+    //   console.log(v)
+    //   x.setValue("")
+    // }
   }
 })

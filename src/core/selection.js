@@ -1,5 +1,4 @@
 import Parchment from 'parchment';
-import Embed from '../blots/embed';
 import clone from 'clone';
 import equal from 'deep-equal';
 import Emitter from './emitter';
@@ -21,52 +20,18 @@ class Selection {
     this.emitter = emitter;
     this.scroll = scroll;
     this.composing = false;
+    this.mouseDown = false;
     this.root = this.scroll.domNode;
-    this.root.addEventListener('compositionstart', () => {
-      this.composing = true;
-    });
-    this.root.addEventListener('compositionend', () => {
-      this.composing = false;
-      if (this.cursor.parent) {
-        const range = this.cursor.restore();
-        if (!range) return;
-        setTimeout(() => {
-          this.setNativeRange(range.startNode, range.startOffset, range.endNode, range.endOffset);
-        }, 1);
-      }
-    });
     this.cursor = Parchment.create('cursor', this);
     // savedRange is last non-null range
     this.lastRange = this.savedRange = new Range(0, 0);
-    this.root.addEventListener('click', (e) => {
-      const blot = Parchment.find(e.target, true);
-      const selectedNode = document.querySelector('.ql-embed-selected');
-      if (selectedNode) {
-        selectedNode.classList.remove('ql-embed-selected');
-      }
-      if (blot instanceof Parchment.Embed) {
-        blot.domNode.classList.add('ql-embed-selected');
-        const range = new Range(blot.offset(scroll), blot.length());
-        this.setRange(range, Emitter.sources.USER);
-        e.stopPropagation();
-      }
-    });
-    //fixed mousecount<0
-
-    // let mouseCount = 0;
-    // this.emitter.listenDOM('mousedown', document.body, () => {
-    //   mouseCount += 1;
-    // });
-    // this.emitter.listenDOM('mouseup', document.body, () => {
-    //   mouseCount -= 1;
-    //   if (mouseCount === 0) {
-    //     this.update(Emitter.sources.USER);
-    //   }
-    // });
+    this.handleComposition();
+    this.handleDragging();
+    this.handleEmbedSelection();
     this.emitter.listenDOM('selectionchange', document, () => {
-      // if (mouseCount === 0) {
-      setTimeout(this.update.bind(this, Emitter.sources.USER), 1);
-      // }
+      if (!this.mouseDown) {
+        setTimeout(this.update.bind(this, Emitter.sources.USER), 1);
+      }
     });
     this.emitter.on(Emitter.events.EDITOR_CHANGE, (type, delta) => {
       if (type === Emitter.events.TEXT_CHANGE && delta.length() > 0) {
@@ -82,7 +47,7 @@ class Selection {
       this.emitter.once(Emitter.events.SCROLL_UPDATE, () => {
         try {
           this.setNativeRange(native.start.node, native.start.offset, native.end.node, native.end.offset);
-        } catch (ignored) { }
+        } catch (ignored) {}
       });
     });
     this.emitter.on(Emitter.events.SCROLL_OPTIMIZE, (mutations, context) => {
@@ -94,25 +59,47 @@ class Selection {
     this.update(Emitter.sources.SILENT);
   }
 
-  fixInlineEmbed(native) {
-    if (native == null) return;
-    const [start, end] = [native.start, native.end].map(function (pos) {
-      const blot = Parchment.find(pos.node, true);
-      if (blot instanceof Embed) {
-        let node, offset;
-        if (pos.node === blot.leftGuard && pos.offset === 1) {
-          [node, offset] = blot.position(blot.length());
-          return { node, offset };
-        } else if (pos.node === blot.rightGuard && pos.offset === 0) {
-          [node, offset] = blot.position(0);
-          return { node, offset };
-        }
-      }
-      return pos;
+  handleComposition() {
+    this.root.addEventListener('compositionstart', () => {
+      this.composing = true;
     });
-    if (native.start !== start || native.end !== end) {
-      this.setNativeRange(start.node, start.offset, end.node, end.offset);
-    }
+    this.root.addEventListener('compositionend', () => {
+      this.composing = false;
+      if (this.cursor.parent) {
+        const range = this.cursor.restore();
+        if (!range) return;
+        setTimeout(() => {
+          this.setNativeRange(range.startNode, range.startOffset, range.endNode, range.endOffset);
+        }, 1);
+      }
+    });
+  }
+
+  handleDragging() {
+    this.emitter.listenDOM('mousedown', document.body, () => {
+      this.mouseDown = true;
+    });
+    this.emitter.listenDOM('mouseup', document.body, () => {
+      this.mouseDown = false;
+      this.update(Emitter.sources.USER);
+    });
+  }
+
+  handleEmbedSelection() {
+    this.emitter.on(Emitter.events.SELECTION_CHANGE, () => {
+      const selectedNode = document.querySelector('.ql-embed-selected');
+      if (selectedNode) {
+        selectedNode.classList.remove('ql-embed-selected');
+      }
+    });
+    this.root.addEventListener('click', (e) => {
+      const blot = Parchment.find(e.target, true);
+      if (blot instanceof Parchment.Embed) {
+        const range = new Range(blot.offset(scroll), blot.length());
+        this.setRange(range, Emitter.sources.USER);
+        blot.domNode.classList.add('ql-embed-selected');
+      }
+    });
   }
 
   focus() {
@@ -227,12 +214,12 @@ class Selection {
     });
     let end = Math.min(Math.max(...indexes), this.scroll.length() - 1);
     let start = Math.min(end, ...indexes);
-    return new Range(start, end - start);
+    return new Range(start, end-start);
   }
 
   normalizeNative(nativeRange) {
     if (!contains(this.root, nativeRange.startContainer) ||
-      (!nativeRange.collapsed && !contains(this.root, nativeRange.endContainer))) {
+        (!nativeRange.collapsed && !contains(this.root, nativeRange.endContainer))) {
       return null;
     }
     let range = {
@@ -240,7 +227,7 @@ class Selection {
       end: { node: nativeRange.endContainer, offset: nativeRange.endOffset },
       native: nativeRange
     };
-    [range.start, range.end].forEach(function (position) {
+    [range.start, range.end].forEach(function(position) {
       let node = position.node, offset = position.offset;
       while (!(node instanceof Text) && node.childNodes.length > 0) {
         if (node.childNodes.length > offset) {
@@ -279,11 +266,11 @@ class Selection {
     if (range == null) return;
     let bounds = this.getBounds(range.index, range.length);
     if (bounds == null) return;
-    let limit = this.scroll.length() - 1;
-    let [first,] = this.scroll.line(Math.min(range.index, limit));
+    let limit = this.scroll.length()-1;
+    let [first, ] = this.scroll.line(Math.min(range.index, limit));
     let last = first;
     if (range.length > 0) {
-      [last,] = this.scroll.line(Math.min(range.index + range.length, limit));
+      [last, ] = this.scroll.line(Math.min(range.index + range.length, limit));
     }
     if (first == null || last == null) return;
     let scrollBounds = scrollingContainer.getBoundingClientRect();
@@ -305,10 +292,10 @@ class Selection {
       if (!this.hasFocus()) this.root.focus();
       let native = (this.getNativeRange() || {}).native;
       if (native == null || force ||
-        startNode !== native.startContainer ||
-        startOffset !== native.startOffset ||
-        endNode !== native.endContainer ||
-        endOffset !== native.endOffset) {
+          startNode !== native.startContainer ||
+          startOffset !== native.startOffset ||
+          endNode !== native.endContainer ||
+          endOffset !== native.endOffset) {
 
         if (startNode.tagName == "BR") {
           startOffset = [].indexOf.call(startNode.parentNode.childNodes, startNode);
@@ -349,7 +336,6 @@ class Selection {
   update(source = Emitter.sources.USER) {
     let oldRange = this.lastRange;
     let [lastRange, nativeRange] = this.getRange();
-    this.fixInlineEmbed(nativeRange);
     this.lastRange = lastRange;
     if (this.lastRange != null) {
       this.savedRange = this.lastRange;

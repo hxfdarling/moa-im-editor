@@ -82,7 +82,7 @@ module.exports = merge(baseWebpackConfig, {
     inline: true,
     hot: true,
     host: '200.200.106.133',
-    port: 82,
+    port: 84,
     compress: true,
     contentBase: '.',
     historyApiFallback: false,
