@@ -10,6 +10,7 @@ import logger from './logger';
 import Theme from './theme';
 import { getGpsCanvas, imageSize, getAtCanvas } from '../modules/util'
 import { ubbToHtml } from './ubb-parser'
+import {  encodeBracket } from './util.js'
 
 let debug = logger('quill');
 
@@ -367,7 +368,7 @@ class Quill {
         let attributes = op.attributes || {}
         let result = ''
         if (typeof op.insert === 'string') {
-          result = op.insert
+          result = encodeBracket(op.insert)
         } else {
           if (op.insert.at) {
             result = `[atPerson id="${attributes['data-value']}" name="${attributes['data-text']}"][/atPerson]`

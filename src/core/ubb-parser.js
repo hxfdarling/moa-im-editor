@@ -254,7 +254,7 @@ export function ubbToHtml(ubb, getEmojiUrl = function () { return null }, mode =
       }
     },
     chars(text) {
-      result.push(text)
+      result.push(decodeBracket(text))
     }
   })
 
