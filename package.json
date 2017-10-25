@@ -19,13 +19,12 @@
 		"test": "npm run unit"
 	},
 	"dependencies": {
-		"color": "^2.0.0",
 		"clone": "^2.1.1",
+		"color": "^2.0.0",
 		"deep-equal": "^1.0.1",
 		"extend": "^3.0.1",
 		"parchment": "1.1.0",
-		"quill-delta": "3.6.1",
-		"vue": "2.4.4"
+		"quill-delta": "3.6.1"
 	},
 	"devDependencies": {
 		"add-asset-html-webpack-plugin": "^2.0.1",
@@ -47,7 +46,7 @@
 		"chalk": "^2.0.1",
 		"compression-webpack-plugin": "^0.4.0",
 		"copy-webpack-plugin": "^4.0.1",
-		"core-js": "^2.4.1",
+		"core-js": "^2.5.1",
 		"cross-env": "^5.0.1",
 		"css-loader": "^0.28.4",
 		"eslint": "^4.2.0",

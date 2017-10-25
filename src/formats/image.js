@@ -1,4 +1,4 @@
-import Embed from '../blots/embed';
+import Parchment from 'parchment';
 import { sanitize } from '../formats/link';
 
 const ATTRIBUTES = [
@@ -11,7 +11,7 @@ const ATTRIBUTES = [
 ];
 
 
-class Image extends Embed {
+class Image extends Parchment.Embed {
   static create(value) {
     let node = super.create(value);
     if (typeof value === 'string') {
@@ -21,7 +21,7 @@ class Image extends Embed {
   }
 
   static formats(domNode) {
-    return ATTRIBUTES.reduce(function (formats, attribute) {
+    return ATTRIBUTES.reduce(function(formats, attribute) {
       if (domNode.hasAttribute(attribute)) {
         formats[attribute] = domNode.getAttribute(attribute);
       }

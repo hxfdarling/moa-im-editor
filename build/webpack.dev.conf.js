@@ -81,8 +81,8 @@ module.exports = merge(baseWebpackConfig, {
   devServer: {
     inline: true,
     hot: true,
-    host: '200.200.106.133',
-    port: 84,
+    host: '0.0.0.0',
+    port: 8080,
     compress: true,
     contentBase: '.',
     historyApiFallback: false,
