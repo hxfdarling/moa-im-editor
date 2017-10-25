@@ -1,17 +1,12 @@
 import Quill from './core';
 
-import {
-	AlignClass,
-	AlignStyle
-} from './formats/align';
+import { AlignClass, AlignStyle } from './formats/align';
 // import { DirectionAttribute, DirectionClass, DirectionStyle } from './formats/direction';
 // import { IndentClass as Indent } from './formats/indent';
 
 // import Blockquote from './formats/blockquote';
 // import Header from './formats/header';
-import List, {
-	ListItem
-} from './formats/list';
+// import List, { ListItem } from './formats/list';
 
 // import { BackgroundClass, BackgroundStyle } from './formats/background';
 // import { ColorClass, ColorStyle } from './formats/color';
@@ -48,67 +43,67 @@ import SnowTheme from './themes/snow';
 
 
 Quill.register({
-	// 'attributors/attribute/direction': DirectionAttribute,
+  // 'attributors/attribute/direction': DirectionAttribute,
 
-	'attributors/class/align': AlignClass,
-	// 'attributors/class/background': BackgroundClass,
-	// 'attributors/class/color': ColorClass,
-	// 'attributors/class/direction': DirectionClass,
-	// 'attributors/class/font': FontClass,
-	// 'attributors/class/size': SizeClass,
+  'attributors/class/align': AlignClass,
+  // 'attributors/class/background': BackgroundClass,
+  // 'attributors/class/color': ColorClass,
+  // 'attributors/class/direction': DirectionClass,
+  // 'attributors/class/font': FontClass,
+  // 'attributors/class/size': SizeClass,
 
-	'attributors/style/align': AlignStyle,
-	// 'attributors/style/background': BackgroundStyle,
-	// 'attributors/style/color': ColorStyle,
-	// 'attributors/style/direction': DirectionStyle,
-	// 'attributors/style/font': FontStyle,
-	// 'attributors/style/size': SizeStyle
+  'attributors/style/align': AlignStyle,
+  // 'attributors/style/background': BackgroundStyle,
+  // 'attributors/style/color': ColorStyle,
+  // 'attributors/style/direction': DirectionStyle,
+  // 'attributors/style/font': FontStyle,
+  // 'attributors/style/size': SizeStyle
 }, true);
 
 
 Quill.register({
-	'formats/align': AlignClass,
-	// 'formats/direction': DirectionClass,
-	// 'formats/indent': Indent,
+  'formats/align': AlignClass,
+  // 'formats/direction': DirectionClass,
+  // 'formats/indent': Indent,
 
-	// 'formats/background': BackgroundStyle,
-	// 'formats/color': ColorStyle,
-	// 'formats/font': FontClass,
-	// 'formats/size': SizeClass,
+  // 'formats/background': BackgroundStyle,
+  // 'formats/color': ColorStyle,
+  // 'formats/font': FontClass,
+  // 'formats/size': SizeClass,
 
-	// 'formats/blockquote': Blockquote,
-	// 'formats/code-block': CodeBlock,
-	// 'formats/header': Header,
-	'formats/list': List,
+  // 'formats/blockquote': Blockquote,
+  // 'formats/code-block': CodeBlock,
+  // 'formats/header': Header,
+  // 'formats/list': List,
 
-	// 'formats/bold': Bold,
-	// 'formats/code': InlineCode,
-	// 'formats/italic': Italic,
-	// 'formats/link': Link,
-	// 'formats/script': Script,
-	// 'formats/strike': Strike,
-	// 'formats/underline': Underline,
+  // 'formats/bold': Bold,
+  // 'formats/code': InlineCode,
+  // 'formats/italic': Italic,
+  // 'formats/link': Link,
+  // 'formats/script': Script,
+  // 'formats/strike': Strike,
+  // 'formats/underline': Underline,
 
-	// 'formats/image': Image,
-	// 'formats/video': Video,
-	// 'formats/gps': Gps,
-	'formats/at': At,
-	'formats/emoji': Emoji,
+  // 'formats/image': Image,
+  // 'formats/video': Video,
+  // 'formats/gps': Gps,
+  'formats/at': At,
+  'formats/emoji': Emoji,
 
-	'formats/list/item': ListItem,
+  // 'formats/list/item': ListItem,
 
-	'modules/formula': Formula,
-	'modules/syntax': Syntax,
-	'modules/toolbar': Toolbar,
+  'modules/formula': Formula,
+  'modules/syntax': Syntax,
+  'modules/toolbar': Toolbar,
 
-	// 'themes/bubble': BubbleTheme,
-	'themes/snow': SnowTheme,
+  // 'themes/bubble': BubbleTheme,
+  'themes/snow': SnowTheme,
 
-	'ui/icons': Icons,
-	'ui/picker': Picker,
-	'ui/icon-picker': IconPicker,
-	'ui/color-picker': ColorPicker,
-	'ui/tooltip': Tooltip
+  'ui/icons': Icons,
+  'ui/picker': Picker,
+  'ui/icon-picker': IconPicker,
+  'ui/color-picker': ColorPicker,
+  'ui/tooltip': Tooltip
 }, true);
 
 
