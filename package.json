@@ -24,7 +24,8 @@
 		"deep-equal": "^1.0.1",
 		"extend": "^3.0.1",
 		"parchment": "1.1.0",
-		"quill-delta": "3.6.1"
+		"quill-delta": "3.6.1",
+		"vue": "^2.5.2"
 	},
 	"devDependencies": {
 		"add-asset-html-webpack-plugin": "^2.0.1",
@@ -91,8 +92,8 @@
 		"stylus-loader": "^2.0.0",
 		"ts-loader": "^2.3.2",
 		"url-loader": "^0.5.9",
-		"vue-loader": "^13.0.0",
-		"vue-template-compiler": "^2.3.4",
+		"vue-loader": "^13.3.0",
+		"vue-template-compiler": "^2.5.2",
 		"webpack": "^3.1.0",
 		"webpack-dev-server": "^2.5.1",
 		"webpack-merge": "^4.1.0",
