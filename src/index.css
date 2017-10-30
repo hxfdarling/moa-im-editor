@@ -5,7 +5,9 @@
 .ql-toolbar.ql-snow+.ql-container.ql-snow {
 	border-top: 1px solid #ccc;
 }
-
+.ql-snow .ql-editor img{
+  vertical-align: middle;
+}
 
 /* 自定义样式  */
 
