@@ -4,3 +4,4 @@ dist/
 .happypack/
 coverage/
 **/.DS_Store
+yarn.lock

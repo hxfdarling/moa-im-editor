@@ -4,6 +4,7 @@ import extend from 'extend';
 import Delta from 'quill-delta';
 import DeltaOp from 'quill-delta/lib/op';
 import Parchment from 'parchment';
+import Embed from '../blots/embed';
 import Quill from '../core/quill';
 import logger from '../core/logger';
 import Module from '../core/module';
@@ -16,7 +17,7 @@ const SHORTKEY = /Mac/i.test(navigator.platform) ? 'metaKey' : 'ctrlKey';
 class Keyboard extends Module {
   static match(evt, binding) {
     binding = normalize(binding);
-    if (['altKey', 'ctrlKey', 'metaKey', 'shiftKey'].some(function (key) {
+    if (['altKey', 'ctrlKey', 'metaKey', 'shiftKey'].some(function(key) {
       return (!!binding[key] !== evt[key] && binding[key] !== null);
     })) {
       return false;
@@ -29,8 +30,8 @@ class Keyboard extends Module {
     this.bindings = {};
     Object.keys(this.options.bindings).forEach((name) => {
       if (name === 'list autofill' &&
-        quill.scroll.whitelist != null &&
-        !quill.scroll.whitelist['list']) {
+          quill.scroll.whitelist != null &&
+          !quill.scroll.whitelist['list']) {
         return;
       }
       if (this.options.bindings[name]) {
@@ -40,11 +41,8 @@ class Keyboard extends Module {
     if (this.quill.options.enterHandler) {
       this.addBinding({ key: Keyboard.keys.ENTER }, this.quill.options.enterHandler)
     }
-
-    this.addBinding({ key: Keyboard.keys.ENTER, ctrlKey: null, shiftKey: null }, handleEnter);
-
-    this.addBinding({ key: Keyboard.keys.ENTER, metaKey: null, ctrlKey: null, altKey: null }, function () { });
-
+    this.addBinding({ key: Keyboard.keys.ENTER, shiftKey: null ,ctrlKey:null}, handleEnter);
+    this.addBinding({ key: Keyboard.keys.ENTER, metaKey: null, ctrlKey: null, altKey: null }, function() {});
     if (/Firefox/i.test(navigator.userAgent)) {
       // Need to handle delete and backspace for Firefox in the general case #1171
       this.addBinding({ key: Keyboard.keys.BACKSPACE }, { collapsed: true }, handleBackspace);
@@ -56,8 +54,8 @@ class Keyboard extends Module {
     this.addBinding({ key: Keyboard.keys.BACKSPACE }, { collapsed: false }, handleDeleteRange);
     this.addBinding({ key: Keyboard.keys.DELETE }, { collapsed: false }, handleDeleteRange);
     this.addBinding({ key: Keyboard.keys.BACKSPACE, altKey: null, ctrlKey: null, metaKey: null, shiftKey: null },
-      { collapsed: true, offset: 0 }, handleBackspace);
-
+                    { collapsed: true, offset: 0 },
+                    handleBackspace);
     this.listen();
   }
 
@@ -78,11 +76,10 @@ class Keyboard extends Module {
   }
 
   listen() {
-    this.quill.root.addEventListener('keydown', this._keydown = (evt) => {
-      this.quill.emitter.emit('keydown', evt)
+    this.quill.root.addEventListener('keydown', (evt) => {
       if (evt.defaultPrevented) return;
       let which = evt.which || evt.keyCode;
-      let bindings = (this.bindings[which] || []).filter(function (binding) {
+      let bindings = (this.bindings[which] || []).filter(function(binding) {
         return Keyboard.match(evt, binding);
       });
       if (bindings.length === 0) return;
@@ -107,14 +104,14 @@ class Keyboard extends Module {
         if (binding.offset != null && binding.offset !== curContext.offset) return false;
         if (Array.isArray(binding.format)) {
           // any format is present
-          if (binding.format.every(function (name) {
+          if (binding.format.every(function(name) {
             return curContext.format[name] == null;
           })) {
             return false;
           }
         } else if (typeof binding.format === 'object') {
           // all formats must match
-          if (!Object.keys(binding.format).every(function (name) {
+          if (!Object.keys(binding.format).every(function(name) {
             if (binding.format[name] === true) return curContext.format[name] != null;
             if (binding.format[name] === false) return curContext.format[name] == null;
             return equal(binding.format[name], curContext.format[name]);
@@ -127,13 +124,9 @@ class Keyboard extends Module {
         return binding.handler.call(this, range, curContext) !== true;
       });
       if (prevented) {
-        this.quill.emitter.emit('input')
         evt.preventDefault();
       }
     });
-  }
-  destroy() {
-    this.quill.root.removeEventListener('keydown', this._keydown)
   }
 }
 
@@ -151,14 +144,14 @@ Keyboard.keys = {
 
 Keyboard.DEFAULTS = {
   bindings: {
-    // 'bold': makeFormatHandler('bold'),
-    // 'italic': makeFormatHandler('italic'),
-    // 'underline': makeFormatHandler('underline'),
+    // 'bold'      : makeFormatHandler('bold'),
+    // 'italic'    : makeFormatHandler('italic'),
+    // 'underline' : makeFormatHandler('underline'),
     // 'indent': {
     //   // highlight tab or tab at beginning of list, indent or blockquote
     //   key: Keyboard.keys.TAB,
     //   format: ['blockquote', 'indent', 'list'],
-    //   handler: function (range, context) {
+    //   handler: function(range, context) {
     //     if (context.collapsed && context.offset !== 0) return true;
     //     this.quill.format('indent', '+1', Quill.sources.USER);
     //   }
@@ -168,7 +161,7 @@ Keyboard.DEFAULTS = {
     //   shiftKey: true,
     //   format: ['blockquote', 'indent', 'list'],
     //   // highlight tab or tab at beginning of list, indent or blockquote
-    //   handler: function (range, context) {
+    //   handler: function(range, context) {
     //     if (context.collapsed && context.offset !== 0) return true;
     //     this.quill.format('indent', '-1', Quill.sources.USER);
     //   }
@@ -182,7 +175,7 @@ Keyboard.DEFAULTS = {
     //   altKey: null,
     //   format: ['indent', 'list'],
     //   offset: 0,
-    //   handler: function (range, context) {
+    //   handler: function(range, context) {
     //     if (context.format.indent != null) {
     //       this.quill.format('indent', '-1', Quill.sources.USER);
     //     } else if (context.format.list != null) {
@@ -197,17 +190,17 @@ Keyboard.DEFAULTS = {
     //   shiftKey: true,
     //   collapsed: true,
     //   prefix: /\t$/,
-    //   handler: function (range) {
+    //   handler: function(range) {
     //     this.quill.deleteText(range.index - 1, 1, Quill.sources.USER);
     //   }
     // },
     // 'tab': {
     //   key: Keyboard.keys.TAB,
-    //   handler: function (range) {
+    //   handler: function(range) {
     //     this.quill.history.cutoff();
     //     let delta = new Delta().retain(range.index)
-    //       .delete(range.length)
-    //       .insert('\t');
+    //                            .delete(range.length)
+    //                            .insert('\t');
     //     this.quill.updateContents(delta, Quill.sources.USER);
     //     this.quill.history.cutoff();
     //     this.quill.setSelection(range.index + 1, Quill.sources.SILENT);
@@ -218,7 +211,7 @@ Keyboard.DEFAULTS = {
     //   collapsed: true,
     //   format: ['list'],
     //   empty: true,
-    //   handler: function (range, context) {
+    //   handler: function(range, context) {
     //     this.quill.format('list', false, Quill.sources.USER);
     //     if (context.format.indent) {
     //       this.quill.format('indent', false, Quill.sources.USER);
@@ -229,12 +222,12 @@ Keyboard.DEFAULTS = {
     //   key: Keyboard.keys.ENTER,
     //   collapsed: true,
     //   format: { list: 'checked' },
-    //   handler: function (range) {
+    //   handler: function(range) {
     //     let [line, offset] = this.quill.getLine(range.index);
     //     let delta = new Delta().retain(range.index)
-    //       .insert('\n', { list: 'checked' })
-    //       .retain(line.length() - offset - 1)
-    //       .retain(1, { list: 'unchecked' });
+    //                            .insert('\n', { list: 'checked' })
+    //                            .retain(line.length() - offset - 1)
+    //                            .retain(1, { list: 'unchecked' });
     //     this.quill.updateContents(delta, Quill.sources.USER);
     //     this.quill.setSelection(range.index + 1, Quill.sources.SILENT);
     //     this.quill.scrollIntoView();
@@ -245,12 +238,12 @@ Keyboard.DEFAULTS = {
     //   collapsed: true,
     //   format: ['header'],
     //   suffix: /^$/,
-    //   handler: function (range, context) {
+    //   handler: function(range, context) {
     //     let [line, offset] = this.quill.getLine(range.index);
     //     let delta = new Delta().retain(range.index)
-    //       .insert('\n', { header: context.format.header })
-    //       .retain(line.length() - offset - 1)
-    //       .retain(1, { header: null });
+    //                            .insert('\n', context.format)
+    //                            .retain(line.length() - offset - 1)
+    //                            .retain(1, { header: null });
     //     this.quill.updateContents(delta, Quill.sources.USER);
     //     this.quill.setSelection(range.index + 1, Quill.sources.SILENT);
     //     this.quill.scrollIntoView();
@@ -260,9 +253,11 @@ Keyboard.DEFAULTS = {
     //   key: ' ',
     //   collapsed: true,
     //   format: { list: false },
-    //   prefix: /^\s*?(1\.|-|\[ ?\]|\[x\])$/,
-    //   handler: function (range, context) {
+    //   prefix: /^\s*?(\d+\.|-|\[ ?\]|\[x\])$/,
+    //   handler: function(range, context) {
     //     let length = context.prefix.length;
+    //     let [line, offset] = this.quill.getLine(range.index);
+    //     if (offset > length) return true;
     //     let value;
     //     switch (context.prefix.trim()) {
     //       case '[]': case '[ ]':
@@ -279,11 +274,10 @@ Keyboard.DEFAULTS = {
     //     }
     //     this.quill.insertText(range.index, ' ', Quill.sources.USER);
     //     this.quill.history.cutoff();
-    //     let [line, offset] = this.quill.getLine(range.index + 1);
-    //     let delta = new Delta().retain(range.index + 1 - offset)
-    //       .delete(length + 1)
-    //       .retain(line.length() - 1 - offset)
-    //       .retain(1, { list: value });
+    //     let delta = new Delta().retain(range.index - offset)
+    //                            .delete(length + 1)
+    //                            .retain(line.length() - 2 - offset)
+    //                            .retain(1, { list: value });
     //     this.quill.updateContents(delta, Quill.sources.USER);
     //     this.quill.history.cutoff();
     //     this.quill.setSelection(range.index - length, Quill.sources.SILENT);
@@ -295,32 +289,71 @@ Keyboard.DEFAULTS = {
     //   format: ['code-block'],
     //   prefix: /\n\n$/,
     //   suffix: /^\s+$/,
-    //   handler: function (range) {
-    //     this.quill.format('code-block', false, Quill.sources.USER);
-    //     this.quill.deleteText(range.index - 2, 1, Quill.sources.USER);
+    //   handler: function(range) {
+    //     const [line, offset] = this.quill.getLine(range.index);
+    //     const delta = new Delta()
+    //       .retain(range.index + line.length() - offset - 2)
+    //       .retain(1, { 'code-block': null })
+    //       .delete(1);
+    //     this.quill.updateContents(delta, Quill.sources.USER);
     //   }
-    // }
+    // },
+    'embed left': makeEmbedArrowHandler(Keyboard.keys.LEFT, false),
+    'embed left shift': makeEmbedArrowHandler(Keyboard.keys.LEFT, true),
+    'embed right': makeEmbedArrowHandler(Keyboard.keys.RIGHT, false),
+    'embed right shift': makeEmbedArrowHandler(Keyboard.keys.RIGHT, true)
   }
 };
+
+function makeEmbedArrowHandler(key, shiftKey) {
+  const where = key === Keyboard.keys.LEFT ? 'prefix' : 'suffix';
+  return {
+    key,
+    shiftKey,
+    [where]: /^$/,
+    handler: function(range) {
+      let index = range.index;
+      if (key === Keyboard.keys.RIGHT) {
+        index += (range.length + 1);
+      }
+      const [leaf, ] = this.quill.getLeaf(index);
+      if (!(leaf instanceof Embed)) return true;
+      if (key === Keyboard.keys.LEFT) {
+        if (shiftKey) {
+          this.quill.setSelection(range.index - 1, range.length + 1, Quill.sources.USER);
+        } else {
+          this.quill.setSelection(range.index - 1, Quill.sources.USER);
+        }
+      } else {
+        if (shiftKey) {
+          this.quill.setSelection(range.index, range.length + 1, Quill.sources.USER);
+        } else {
+          this.quill.setSelection(range.index + range.length + 1, Quill.sources.USER);
+        }
+      }
+      return false;
+    }
+  };
+}
 
 
 function handleBackspace(range, context) {
   if (range.index === 0 || this.quill.getLength() <= 1) return;
-  let [line,] = this.quill.getLine(range.index);
+  let [line, ] = this.quill.getLine(range.index);
   let formats = {};
   if (context.offset === 0) {
-    let [prev,] = this.quill.getLine(range.index - 1);
+    let [prev, ] = this.quill.getLine(range.index - 1);
     if (prev != null && prev.length() > 1) {
       let curFormats = line.formats();
-      let prevFormats = this.quill.getFormat(range.index - 1, 1);
+      let prevFormats = this.quill.getFormat(range.index-1, 1);
       formats = DeltaOp.attributes.diff(curFormats, prevFormats) || {};
     }
   }
   // Check for astral symbols
   let length = /[\uD800-\uDBFF][\uDC00-\uDFFF]$/.test(context.prefix) ? 2 : 1;
-  this.quill.deleteText(range.index - length, length, Quill.sources.USER);
+  this.quill.deleteText(range.index-length, length, Quill.sources.USER);
   if (Object.keys(formats).length > 0) {
-    this.quill.formatLine(range.index - length, length, formats, Quill.sources.USER);
+    this.quill.formatLine(range.index-length, length, formats, Quill.sources.USER);
   }
   this.quill.focus();
 }
@@ -330,9 +363,9 @@ function handleDelete(range, context) {
   let length = /^[\uD800-\uDBFF][\uDC00-\uDFFF]/.test(context.suffix) ? 2 : 1;
   if (range.index >= this.quill.getLength() - length) return;
   let formats = {}, nextLength = 0;
-  let [line,] = this.quill.getLine(range.index);
+  let [line, ] = this.quill.getLine(range.index);
   if (context.offset >= line.length() - 1) {
-    let [next,] = this.quill.getLine(range.index + 1);
+    let [next, ] = this.quill.getLine(range.index + 1);
     if (next) {
       let curFormats = line.formats();
       let nextFormats = this.quill.getFormat(range.index, 1);
@@ -366,7 +399,7 @@ function handleEnter(range, context) {
   if (range.length > 0) {
     this.quill.scroll.deleteAt(range.index, range.length);  // So we do not trigger text-change
   }
-  let lineFormats = Object.keys(context.format).reduce(function (lineFormats, format) {
+  let lineFormats = Object.keys(context.format).reduce(function(lineFormats, format) {
     if (Parchment.query(format, Parchment.Scope.BLOCK) && !Array.isArray(context.format[format])) {
       lineFormats[format] = context.format[format];
     }
@@ -389,8 +422,8 @@ function makeCodeBlockHandler(indent) {
   return {
     key: Keyboard.keys.TAB,
     shiftKey: !indent,
-    format: { 'code-block': true },
-    handler: function (range) {
+    format: {'code-block': true },
+    handler: function(range) {
       let CodeBlock = Parchment.query('code-block');
       let index = range.index, length = range.length;
       let [block, offset] = this.quill.scroll.descendant(CodeBlock, index);
@@ -430,7 +463,7 @@ function makeFormatHandler(format) {
   return {
     key: format[0].toUpperCase(),
     shortKey: true,
-    handler: function (range, context) {
+    handler: function(range, context) {
       this.quill.format(format, !context.format[format], Quill.sources.USER);
     }
   };

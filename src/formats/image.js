@@ -4,10 +4,7 @@ import { sanitize } from '../formats/link';
 const ATTRIBUTES = [
   'alt',
   'height',
-  'width',
-  "data-hash",
-  "data-height",
-  "data-width"
+  'width'
 ];
 
 

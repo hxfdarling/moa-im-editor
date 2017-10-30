@@ -6,11 +6,9 @@ module.exports = {
     "es6": true
   },
   "globals": {
-    "jQuery": true,
     "Vue": true,
     "Vuex": true,
-    "VueRouter": true,
-    "$": true
+    "VueRouter": true
   },
   "extends": [
     "eslint:recommended"

@@ -18,10 +18,10 @@ if (require("os").type() === "Linux") {
   cacheDirectory = "/cache/uglifyjs"
 }
 let plugins = [
-  new CopyWebpackPlugin([{
-    from: resolve('./src/assets/quill.snow.css'),
-    to: resolve('dist/')
-  }]),
+  // new CopyWebpackPlugin([{
+  //   from: resolve('./src/assets/quill.snow.css'),
+  //   to: resolve('dist/')
+  // }]),
   new webpack.HashedModuleIdsPlugin(),
   new ExtractTextPlugin({
     filename: '[name].css',
@@ -94,7 +94,7 @@ module.exports = merge(baseWebpackConfig, {
   devtool: BUILD_ENV === "development" ? "source-map" : "none", //'source-map',
   entry: {
     // 'quill.core': './src/core.js',
-    'quill': './src/quill.js'
+    'quill': './src/index.js'
   },
   output: {
     path: util.resolve('dist'),
